@@ -1,6 +1,7 @@
 # RAECM: Internet-Scale Router Attribute Identification
 
-**RAECM** (Router Asset Evidence-Centric Multi-agent) is an autonomous framework for Internet-scale IPv6 router attribute identification via an evidence-centric multi-agent approach.
+**RAECM** (Router Asset Evidence-Centric Multi-agent) is an autonomous framework for Internet-scale router attribute identification via an evidence-centric multi-agent approach.
+**The complete code will be open-sourced after passing peer review**
 
 ## 📦 Overview
 
@@ -38,12 +39,12 @@ RAECM addresses the persistent challenge of converting heterogeneous and noisy s
 ## 📁 Project Structure
 
 ```
-6Analyst-master/
+Analyst-master/
 ├── README.md              # This file - Project overview
 │
 ├── recog/                 # Teacher-side LLM identification pipeline
-│   ├── 6Analyst/         # Core implementation
-│   ├── run_6analyst.py   # Main entry point
+│   ├── Analyst/         # Core implementation
+│   ├── run_analyst.py   # Main entry point
 │   └── README.md         # Complete documentation
 │
 └── model/                 # Student model distillation
@@ -64,8 +65,8 @@ High-accuracy identification using LLMs:
 ```bash
 cd recog
 pip install openai requests
-# Configure API in 6Analyst/config.py
-python run_6analyst.py
+# Configure API in Analyst/config.py
+python run_analyst.py
 ```
 
 **See [recog/README.md](recog/README.md) for complete documentation.**
