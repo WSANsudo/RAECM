@@ -1,0 +1,127 @@
+# 网络设备分析模型训练系统 - 默认配置文件
+# 
+# 此文件为默认配置，实际训练时请使用 configs/ 目录下的模型专用配置
+# 
+# 使用方法:
+#   ./run.sh                    # 交互式选择模型
+#   bash bash/qwen3-32b.sh vd   # 直接运行指定模型脚本
+#
+# 配置文件说明:
+#   configs/qwen3-0.6b.yaml  - 小显存 (6-8GB)
+#   configs/qwen3-8b.yaml    - 中显存 (16-24GB)
+#   configs/qwen3-32b.yaml   - 大显存 (48-80GB)
+#   configs/llama3-8b.yaml   - Llama3 中显存 (16-24GB)
+
+# 模型配置 (A800 80GB 优化)
+model:
+  name_or_path: "./models/Qwen3-32B"  # 或 "Qwen/Qwen3-32B"
+  type: "qwen3"
+  use_lora: true
+  lora_rank: 64                  # 大模型用更大的 rank 提升效果
+  lora_alpha: 128                # alpha = 2 * rank
+  lora_dropout: 0.05
+  lora_target_modules:           # 训练更多层提升效果
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  max_length: 2048               # 更长的序列长度
+  trust_remote_code: true
+
+# 训练配置 (A800 80GB 优化)
+training:
+  output_dir: "./output"
+  num_train_epochs: 5            # 更多 epoch 充分训练
+  per_device_train_batch_size: 4 # A800 可以用更大 batch
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4 # 有效 batch = 16
+  learning_rate: 1.0e-4          # 大模型用稍小的学习率
+  warmup_ratio: 0.1
+  lr_scheduler_type: "cosine_with_restarts"  # 带重启的余弦调度
+  weight_decay: 0.01
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 3            # 保留最近3个checkpoint
+  bf16: true                     # A800 支持 bf16，比 fp16 更稳定
+  fp16: false
+  gradient_checkpointing: true   # 节省显存，允许更大 batch
+  optim: "adamw_torch_fused"     # 使用融合优化器加速
+  resume_from_checkpoint: null
+  dataloader_num_workers: 4      # Linux 可以用多进程
+  dataloader_pin_memory: true
+  torch_compile: false           # 可选：开启 torch.compile 加速
+
+# 数据配置
+data:
+  input_path: "./input/vendor_model_train.jsonl"
+  output_dir: "./data"
+  train_ratio: 0.8
+  valid_ratio: 0.1
+  test_ratio: 0.1
+  augment_ratio: 0.3             # 数据增强比例
+
+# 推理配置
+inference:
+  temperature: 0.1
+  top_p: 0.9
+  max_new_tokens: 512
+  do_sample: false
+
+# 简化训练配置 (推荐使用)
+simple:
+  # 早停策略
+  early_stopping: true
+  early_stopping_patience: 3
+  min_epochs: 5                  # 最小训练轮数，早停在此之后生效
+  
+  # 生成参数
+  max_new_tokens: 50             # 生成的最大token数
+  
+  # 评估配置
+  eval_samples: 300              # 训练中评估的样本数
+  
+  # 学习率调度器
+  lr_scheduler_type: "cosine"    # linear, cosine, cosine_with_restarts
+
+# 蒸馏训练配置 (已弃用，保留兼容性)
+distillation:
+  # 损失权重
+  lambda_struct: 1.0             # 结构化损失
+  lambda_cons: 0.1               # 一致性损失
+  lambda_pref: 0.2               # DPO 偏好损失
+  lambda_feat: 0.0               # 特征蒸馏（可选）
+  
+  # DPO偏好学习
+  use_dpo: true
+  dpo_beta: 0.1
+  
+  # 课程学习
+  use_curriculum: true
+  curriculum_start_epoch: 0
+  curriculum_end_epoch: 3
+  use_loss_based_difficulty: true  # 启用基于损失的难度评估
+  
+  # 一致性训练
+  num_context_variants: 2        # 启用多变体一致性
+  context_dropout_rate: 0.1
+  
+  # 置信度校准
+  calibration_temperature: 1.0
+  confidence_threshold: 0.7
+  
+  # 多阶段训练
+  multi_stage_training: true
+  sft_epochs: 3                  # SFT 阶段
+  dpo_epochs: 2                  # DPO 阶段
+  
+  # 早停策略
+  early_stopping: true
+  early_stopping_patience: 3
+  early_stopping_min_delta: 0.001
+  
+  # 错误分析
+  collect_errors: true           # 收集错误样本用于分析

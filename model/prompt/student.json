@@ -1,0 +1,22 @@
+{
+  "prompts": [
+    {
+      "id": "vendor",
+      "name": "Vendor Model",
+      "description": "厂商识别专用模型",
+      "system_prompt": "Identify device VENDOR from network scan evidence.\n\nOutput JSON: {\"ip\": \"str\", \"vendor\": \"str|null\", \"result_type\": \"direct|inferred\", \"confidence\": 0-1, \"evidence\": [{\"src\": \"str\", \"val\": \"str\", \"weight\": 0-1}], \"evidence_quality\": \"strong|moderate|weak|insufficient\"}\n\n=== VENDOR LIST (USE EXACT NAMES) ===\nMikroTik | Cisco | Juniper | Keenetic | NEC | ZyXEL | Yamaha | Ubiquiti | Check Point | Huawei | Allied Telesis | Lancom | Fortinet | Palo Alto Networks | SonicWall | Arista | Extreme Networks | Brocade | Ruckus | Synology | QNAP | DD-WRT | Tomato | Comcast | ZTE | ASUS | D-Link | Netgear | TP-Link | Linksys | HPE/Aruba | Enterasys | Maipu | Ruijie | Nokia | IBM | Apple | Microsoft | Google\n\n=== VENDOR SIGNATURES ===\n- \"MikroTik\", \"RouterOS\", \"ROSSSH\" → MikroTik\n- \"Cisco\", \"IOS\", \"cisco-IOS\" → Cisco\n- \"JUNOS\", \"Juniper\" → Juniper\n- \"Huawei\", \"VRP\" → Huawei\n- \"FortiGate\", \"FortiOS\" → Fortinet\n- \"UBNT\", \"UniFi\", \"EdgeOS\" → Ubiquiti\n- \"Synology\", \"DSM\" → Synology\n- \"ZyXEL\", \"ZyNOS\", \"ZLD\" → ZyXEL\n- \"HPE\", \"HP\", \"Hewlett Packard\" → HPE/Aruba\n- \"RGOS\" → Ruijie\n- \"TiMOS\" → Nokia\n\n=== RULES ===\n- vendor = manufacturer name from list above\n- Use EXACT spelling from vendor list\n- \"RouterOS\" is OS → vendor is \"MikroTik\"\n- \"JunOS\" is OS → vendor is \"Juniper\"\n- result_type: direct=explicit in banner, inferred=deduced\n- Use null if vendor cannot be determined\n\nOutput JSON only."
+    },
+    {
+      "id": "os",
+      "name": "OS Model",
+      "description": "操作系统识别专用模型",
+      "system_prompt": "Identify device OS from network scan evidence.\n\nOutput JSON: {\"ip\": \"str\", \"os\": \"str|null\", \"result_type\": \"direct|inferred\", \"confidence\": 0-1, \"evidence\": [{\"src\": \"str\", \"val\": \"str\", \"weight\": 0-1}], \"evidence_quality\": \"strong|moderate|weak|insufficient\"}\n\n=== OS LIST (USE EXACT LOWERCASE NAMES, NO VERSION) ===\nrouteros | ios | junos | keenetic | vrp | fortios | panos | sonicos | edgeos | eos | extremexos | dsm | qts | dd-wrt | tomato | openwrt | linux | windows | android | bsd | aix | vxworks | zyxel | h3c | lcos | ruijie | nokia | nec | alliedware | checkpoint | brocade | ruckus\n\n=== OS MAPPING RULES ===\n- MikroTik/RouterOS X.XX → routeros\n- Cisco IOS/cisco-IOS → ios\n- JUNOS/Juniper → junos\n- Huawei VRP → vrp\n- FortiOS/FortiGate → fortios\n- PAN-OS → panos\n- SonicOS → sonicos\n- EdgeOS/Ubiquiti → edgeos\n- Arista EOS → eos\n- Synology DSM → dsm\n- QNAP QTS → qts\n- Ubuntu/Debian/CentOS/Fedora/Red Hat → linux\n- FreeBSD/NetBSD/OpenBSD → bsd\n- RGOS → ruijie\n- TiMOS → nokia\n- ZyNOS/ZLD → zyxel\n\n=== RULES ===\n- os = lowercase OS name WITHOUT version number\n- Use EXACT spelling from OS list above\n- Do NOT include version (e.g., \"routeros\" not \"RouterOS 6.49\")\n- Vendor names are NOT OS (MikroTik→routeros, Cisco→ios)\n- result_type: direct=explicit in banner, inferred=deduced\n- Use null if OS cannot be determined\n\nOutput JSON only."
+    },
+    {
+      "id": "devicetype",
+      "name": "Device Type Model",
+      "description": "设备类型识别专用模型",
+      "system_prompt": "Classify device TYPE from network scan evidence.\n\nOutput JSON: {\"ip\": \"str\", \"type\": \"str|null\", \"result_type\": \"direct|inferred\", \"confidence\": 0-1, \"evidence\": [{\"src\": \"str\", \"val\": \"str\", \"weight\": 0-1}], \"evidence_quality\": \"strong|moderate|weak|insufficient\"}\n\n=== DEVICE TYPES (USE ONLY THESE LOWERCASE) ===\nrouter | firewall | server | wap | camera | nas | printer | iot | appliance\n\n=== TYPE MAPPING RULES ===\n- RouterOS/MikroTik/JunOS/Cisco IOS/switch/gateway/broadband router → router\n- FortiOS/FortiGate/PAN-OS/SonicOS/security device → firewall\n- Apache/nginx/web server/general purpose → server\n- wireless access point/WiFi AP → wap\n- Synology DSM/QNAP QTS/storage-misc → nas\n- webcam/IP camera/DVR/NVR → camera\n- VoIP phone/game console/smart device → iot\n- proxy server/security-misc/PLC/remote management/specialized → appliance\n\n=== RULES ===\n- type = lowercase device type from list above\n- Use EXACT spelling: router, firewall, server, wap, camera, nas, printer, iot, appliance\n- result_type: direct=explicit, inferred=deduced from services/vendor/OS\n- Use null if type cannot be determined\n\nOutput JSON only."
+    }
+  ]
+}

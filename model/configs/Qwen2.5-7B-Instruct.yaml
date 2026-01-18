@@ -1,0 +1,91 @@
+# Qwen2.5-7B-Instruct 配置
+# 显存: 80GB (充足)
+# 数据量: ~1400 样本
+# 策略: 大模型 + 小 batch + 保守学习率 + 严格防过拟合
+
+model:
+  name_or_path: "./models/Qwen2.5-7B-Instruct"
+  type: "qwen2"
+  use_lora: true
+  
+  # LoRA 配置 - 大模型用小 rank
+  lora_rank: 8
+  lora_alpha: 16
+  lora_dropout: 0.15
+  lora_target_modules:
+    - "q_proj"
+    - "k_proj"
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+  trust_remote_code: true
+
+training:
+  output_dir: "./output"
+  
+  num_train_epochs: 15
+  
+  # 80GB 显存充足，但为了稳定性用适中 batch
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4  # 有效 batch = 16
+  
+  # 学习率 - 大模型保守
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  lr_scheduler_type: "cosine"
+  
+  # 正则化 - 加强
+  weight_decay: 0.05
+  max_grad_norm: 0.5
+  
+  # 评估和保存
+  logging_steps: 20
+  save_steps: 100
+  eval_steps: 40
+  save_total_limit: 3
+  
+  # 精度
+  bf16: true
+  fp16: false
+  gradient_checkpointing: true
+  
+  optim: "adamw_torch"
+  dataloader_num_workers: 4
+  dataloader_pin_memory: true
+
+data:
+  output_dir: "./data"
+  train_ratio: 0.8
+  valid_ratio: 0.1
+  test_ratio: 0.1
+  augment_ratio: 0.0
+
+inference:
+  temperature: 0.1
+  top_p: 0.9
+  max_new_tokens: 128
+  do_sample: false
+  repetition_penalty: 1.1
+
+distillation:
+  lambda_struct: 1.0
+  lambda_cons: 0.0
+  lambda_pref: 0.0
+  lambda_feat: 0.0
+  use_dpo: false
+  
+  # 早停配置 - 大模型更严格
+  early_stopping: true
+  early_stopping_patience: 3
+  early_stopping_min_delta: 0.001
+  min_epochs: 5
+  
+  # 生成和评估配置
+  max_new_tokens: 50
+  eval_samples: 300
+  lr_scheduler_type: "cosine"
+  
+  collect_errors: false

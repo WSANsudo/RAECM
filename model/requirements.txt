@@ -1,0 +1,33 @@
+# 网络设备分析模型训练系统依赖
+# Network Device Analyzer Training System Requirements
+
+# PyTorch (根据 CUDA 版本选择)
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
+
+# Transformers 生态
+transformers>=4.40.0
+datasets>=2.18.0
+tokenizers>=0.15.0
+sentencepiece>=0.2.0
+safetensors>=0.4.0
+
+# PEFT (LoRA/QLoRA)
+peft>=0.10.0
+accelerate>=0.28.0
+bitsandbytes>=0.43.0
+
+# 训练工具
+trl>=0.8.0
+wandb>=0.16.0  # 可选，用于实验跟踪
+
+# 评估和工具
+scikit-learn>=1.4.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# 进度条和配置
+tqdm>=4.66.0
+pyyaml>=6.0

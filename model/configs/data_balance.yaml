@@ -1,0 +1,53 @@
+# 数据集标签平衡配置文件
+# Data Balance Configuration
+#
+# 用法:
+#   python full_run.py --data-config configs/data_balance.yaml
+#
+# 配置说明:
+#   - major_ratio: 最多标签的目标占比 (0.0-1.0)
+#   - 如果设置为 null 或不设置，则不进行平衡
+#   - train: 训练集配置
+#   - valid: 验证集配置  
+#   - test: 测试集配置
+
+# 全局默认配置（如果任务没有单独配置，则使用此配置）
+default:
+  train:
+    major_ratio: null  # 不平衡训练集
+  valid:
+    major_ratio: 0.4   # 验证集最多标签占40%
+  test:
+    major_ratio: 0.4   # 测试集最多标签占40%
+
+# 按任务类型配置
+tasks:
+  # 厂商识别任务
+  vendor:
+    train:
+      major_ratio: 0.8  # 训练集最多标签占80%
+    valid:
+      major_ratio: 0.4  # 验证集最多标签占40%
+    test:
+      major_ratio: 0.4  # 测试集最多标签占40%
+  
+  # 操作系统识别任务
+  os:
+    train:
+      major_ratio: 0.6  # 训练集最多标签占60%
+    valid:
+      major_ratio: 0.4  # 验证集最多标签占40%
+    test:
+      major_ratio: 0.4  # 测试集最多标签占40%
+  
+  # 设备类型识别任务
+  devicetype:
+    train:
+      major_ratio: 0.7  # 训练集最多标签占70%
+    valid:
+      major_ratio: 0.4  # 验证集最多标签占40%
+    test:
+      major_ratio: 0.4  # 测试集最多标签占40%
+
+# 随机种子（确保可复现）
+seed: 42
