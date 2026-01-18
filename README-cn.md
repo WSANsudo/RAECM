@@ -1,6 +1,6 @@
 # RAECM: 互联网规模路由器属性识别系统
 
-**RAECM**（Router Asset Evidence-Centric Multi-agent，路由器资产证据中心多智能体系统）是一个面向互联网规模IPv6路由器属性识别的自主框架，采用以证据为中心的多智能体方法。
+**RAECM**（Router Asset Evidence-Centric Multi-agent，路由器资产证据中心多智能体系统）是一个面向互联网规模路由器属性识别的自主框架，采用以证据为中心的多智能体方法。
 
 ## 📦 系统概述
 
@@ -38,12 +38,12 @@ RAECM解决了将异构且含噪的服务数据大规模转换为细粒度、可
 ## 📁 项目结构
 
 ```
-6Analyst-master/
+Analyst-master/
 ├── README.md              # 项目总览（英文）
 ├── README-cn.md           # 项目总览（中文）
 │
 ├── recog/                 # 教师端LLM识别流水线
-│   ├── 6Analyst/         # 核心实现
+│   ├── Analyst/         # 核心实现
 │   ├── run_6analyst.py   # 主入口
 │   ├── README.md         # 完整文档（英文）
 │   └── README-cn.md      # 完整文档（中文）
@@ -67,8 +67,8 @@ RAECM解决了将异构且含噪的服务数据大规模转换为细粒度、可
 ```bash
 cd recog
 pip install openai requests
-# 在 6Analyst/config.py 中配置API
-python run_6analyst.py
+# 在 Analyst/config.py 中配置API
+python run_analyst.py
 ```
 
 **详见 [recog/README-cn.md](recog/README-cn.md) 获取完整文档。**
