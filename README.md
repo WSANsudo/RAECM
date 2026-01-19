@@ -79,7 +79,7 @@ High-throughput identification using distilled models:
 cd model
 pip install -r requirements.txt
 # Download model
-python train.py --mt vd --model qwen2.5-3b
+python train.py --mt vd --model qwen3-4b
 python evaluate.py --mt vd
 ```
 
